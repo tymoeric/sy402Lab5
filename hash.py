@@ -40,7 +40,6 @@ def importKnown():
         cReader = csv.reader(csvFile, delimiter=',')
         for row in cReader:
             fileDict[row[0]] = File(row[0], row[1], row[2])
-
     return
 
 def saveKnown():
@@ -65,18 +64,18 @@ def checkFile(filePath):
 
 
 def doScan():
-    ignoreDirs = ["/dev", "/proc", "/run ", "/sys", "/tmp", "/var/lib", "/var/run"]
+    ignoreDirs = ["dev", "proc", "run", "sys", "tmp", "var", "share", "lib"]
     
 
-    for dirName, subdirList, fileList in os.walk("/", topdown=False):
-        print("Checking " + dirName)
-        if dirName in ignoreDirs:
-            continue
-        for file in fileList:
+    for root, dirs, files in os.walk("/", topdown=True):
+        print("Checking " + root)
+        [dirs.remove(d) for d in dirs if d in ignoreDirs]
+	
+        for file in files:
             # print(dirName)
             # print(os.path.join(dirName, file))
             try:
-                checkFile(os.path.join(dirName,file))
+                checkFile(os.path.join(root,file))
             except:
                 print("An exception occured")
             
